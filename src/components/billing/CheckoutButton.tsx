@@ -25,12 +25,18 @@ export function CheckoutButton({
     setLoading(true);
     try {
       const res = await fetch("/api/checkout", { method: "POST" });
-      const data = (await res.json()) as { url?: string; error?: string };
+      let data: { url?: string; error?: string; code?: string };
+      try {
+        data = (await res.json()) as { url?: string; error?: string; code?: string };
+      } catch {
+        setErr(`Checkout failed (HTTP ${res.status}). Check server configuration.`);
+        return;
+      }
       if (data.url) {
         window.location.href = data.url;
         return;
       }
-      setErr(data.error || "Could not start checkout.");
+      setErr(data.error || `Could not start checkout (${res.status}).`);
     } catch {
       setErr("Network error. Try again.");
     } finally {

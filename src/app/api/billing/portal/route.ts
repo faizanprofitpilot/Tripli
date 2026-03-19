@@ -7,11 +7,25 @@ export const runtime = "nodejs";
 
 /** Stripe Customer Portal — update payment method, cancel, view invoices. */
 export async function POST() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || !process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "Add SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL to the server environment for billing.",
+        code: "MISSING_SUPABASE_SERVICE_ROLE",
+      },
+      { status: 503 }
+    );
+  }
+
   let admin;
   try {
     admin = createAdminSupabaseClient();
   } catch {
-    return NextResponse.json({ error: "Billing not configured." }, { status: 503 });
+    return NextResponse.json(
+      { error: "Could not open Supabase admin client.", code: "ADMIN_CLIENT_FAILED" },
+      { status: 503 }
+    );
   }
 
   const supabase = await createServerSupabaseClient();

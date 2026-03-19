@@ -10,10 +10,25 @@ export const runtime = "nodejs";
  * Requires authenticated user. Uses service role to upsert stripe_customer_id.
  */
 export async function POST() {
-  const priceId = process.env.STRIPE_PRICE_ID_PRO;
+  const priceId = process.env.STRIPE_PRICE_ID_PRO?.trim();
   if (!priceId) {
     return NextResponse.json(
-      { error: "Billing is not configured (missing STRIPE_PRICE_ID_PRO)." },
+      {
+        error:
+          "Checkout isn’t configured: set STRIPE_PRICE_ID_PRO in production (your Stripe Price ID, e.g. price_xxx).",
+        code: "MISSING_STRIPE_PRICE_ID",
+      },
+      { status: 503 }
+    );
+  }
+
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || !process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) {
+    return NextResponse.json(
+      {
+        error:
+          "Checkout needs SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_SUPABASE_URL on the server (used once to store your Stripe customer id).",
+        code: "MISSING_SUPABASE_SERVICE_ROLE",
+      },
       { status: 503 }
     );
   }
@@ -23,7 +38,10 @@ export async function POST() {
     admin = createAdminSupabaseClient();
   } catch {
     return NextResponse.json(
-      { error: "Server billing configuration error." },
+      {
+        error: "Could not connect to Supabase with the service role key. Check env vars in your host dashboard.",
+        code: "ADMIN_CLIENT_FAILED",
+      },
       { status: 503 }
     );
   }
