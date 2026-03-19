@@ -2,14 +2,13 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import {
   FREE_TRIP_GENERATIONS,
-  FAIR_USE_DISCLAIMER,
   PRO_PLAN_PRICE_USD,
   PRO_PLAN_LABEL,
 } from "@/lib/billing-constants";
 
-export { FREE_TRIP_GENERATIONS, FAIR_USE_DISCLAIMER, PRO_PLAN_PRICE_USD, PRO_PLAN_LABEL };
+export { FREE_TRIP_GENERATIONS, PRO_PLAN_PRICE_USD, PRO_PLAN_LABEL };
 
-/** Subscription statuses that unlock Pro features (generation + fair-use limits). */
+/** Subscription statuses that unlock Pro features. */
 const PRO_STATUSES = new Set(["active", "trialing"]);
 
 export function isProStatus(status: string | null | undefined): boolean {
@@ -53,7 +52,7 @@ export async function assertCanGenerateTrip(userId: string): Promise<TripGenerat
       ok: false,
       requiresSubscription: true,
       message:
-        "You’ve already used your free trip. Upgrade to Tripli Pro ($19/mo) for unlimited trip generations (fair use applies).",
+        "You’ve already used your free trip. Upgrade to Tripli Pro ($19/mo) for unlimited trip generations.",
     };
   }
   return { ok: true };

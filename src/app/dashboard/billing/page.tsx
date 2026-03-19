@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { getSessionUser } from "@/lib/supabase/auth";
-import { getBillingStateForUser, FAIR_USE_DISCLAIMER, PRO_PLAN_LABEL } from "@/lib/billing";
+import { getBillingStateForUser, PRO_PLAN_LABEL } from "@/lib/billing";
 import { CheckoutButton } from "@/components/billing/CheckoutButton";
 import { PortalButton } from "@/components/billing/PortalButton";
 import { redirect } from "next/navigation";
@@ -57,8 +57,8 @@ export default async function BillingPage({
               className="mt-6 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-foreground"
               role="status"
             >
-              Thanks! If your subscription is active, you can generate unlimited trips (fair use
-              applies). It may take a few seconds for status to update.
+              Thanks! If your subscription is active, you can generate unlimited trips. It may take
+              a few seconds for status to update.
             </div>
           )}
 
@@ -122,9 +122,8 @@ export default async function BillingPage({
           </section>
 
           <section className="mt-8 rounded-2xl border border-border bg-muted/20 p-6">
-            <h2 className="text-base font-semibold text-foreground">Fair use & receipts</h2>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{FAIR_USE_DISCLAIMER}</p>
-            <ul className="mt-4 list-inside list-disc space-y-1 text-sm text-muted-foreground">
+            <h2 className="text-base font-semibold text-foreground">Receipts & billing help</h2>
+            <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
               <li>We email receipts through Stripe when your card is charged.</li>
               <li>
                 EU/UK consumers: you have statutory withdrawal rights where applicable; see Stripe

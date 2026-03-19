@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CheckoutButton } from "@/components/billing/CheckoutButton";
-import { PRO_PLAN_LABEL, FAIR_USE_DISCLAIMER } from "@/lib/billing-constants";
+import { PRO_PLAN_LABEL } from "@/lib/billing-constants";
 
 type SubscriptionGateDialogProps = {
   open: boolean;
@@ -30,9 +30,6 @@ export function SubscriptionGateDialog({ open, onOpenChange }: SubscriptionGateD
             generations.
           </DialogDescription>
         </DialogHeader>
-        <p className="rounded-lg bg-muted/60 px-3 py-2 text-xs text-muted-foreground leading-snug">
-          {FAIR_USE_DISCLAIMER}
-        </p>
         <DialogFooter className="flex-col gap-2 sm:flex-col">
           <CheckoutButton className="w-full rounded-full font-semibold shadow-primary">
             Continue to checkout

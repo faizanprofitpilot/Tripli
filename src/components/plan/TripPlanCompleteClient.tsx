@@ -7,7 +7,7 @@ import { generateTrip } from "@/app/actions/trips";
 import { loadWizardDraft, clearWizardDraft } from "@/lib/trip-wizard-storage";
 import { TripGeneratingOverlay } from "@/components/planner/TripGeneratingOverlay";
 import { CheckoutButton } from "@/components/billing/CheckoutButton";
-import { FAIR_USE_DISCLAIMER, PRO_PLAN_LABEL } from "@/lib/billing-constants";
+import { PRO_PLAN_LABEL } from "@/lib/billing-constants";
 /** Prevents duplicate generateTrip in React Strict Mode (dev double mount). */
 let wizardCompleteInFlight = false;
 
@@ -75,9 +75,6 @@ export function TripPlanCompleteClient() {
             generations.
           </p>
         </div>
-        <p className="rounded-lg bg-muted/60 px-3 py-2 text-left text-xs text-muted-foreground leading-snug">
-          {FAIR_USE_DISCLAIMER}
-        </p>
         <CheckoutButton className="w-full max-w-sm rounded-full font-semibold shadow-primary">
           Continue to Stripe checkout
         </CheckoutButton>

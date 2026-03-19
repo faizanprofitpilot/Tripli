@@ -52,7 +52,7 @@
 ## Billing
 
 - **Free:** one lifetime AI trip generation per account (tracked in the database; deleting a trip does not reset this).
-- **Tripli Pro:** $19/mo via Stripe Subscription — unlimited generations with a **fair use** policy (see UI + `docs/STRIPE.md`).
+- **Tripli Pro:** $19/mo via Stripe Subscription — unlimited trip generations.
 - Webhook endpoint: `POST /api/webhooks/stripe`. Full setup: [`docs/STRIPE.md`](docs/STRIPE.md).
 
 ## Deploy (Vercel)

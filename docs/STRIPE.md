@@ -61,4 +61,4 @@ See `.env.example`. Required for billing:
 
 - Receipts and tax: Stripe sends receipts; configure tax in Stripe if you charge VAT/GST.
 - **EU/UK**: respect consumer withdrawal rules where applicable; your billing page links users to manage/cancel via the portal.
-- Keep product copy (fair use, pricing) aligned with Stripe product description and your Terms.
+- Keep product copy and pricing aligned with Stripe product description and your Terms.
