@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tripli
 
-## Getting Started
+**Your trip, already planned.** Tripli is an AI travel planner that generates a complete multi-day itinerary from your destination and preferences. Get a full trip with hotel, day-by-day activities, meals, cost estimate, and an interactive map—then swap hotels or activities or regenerate a day with one click.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Next.js 15** (App Router), **TypeScript**, **Tailwind CSS**, **shadcn/ui**
+- **Supabase** (database + auth)
+- **OpenAI** (itinerary generation)
+- **Google Places API** (place search, details, photos)
+- **Google Maps JavaScript API** (map and markers)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone and install**
+   ```bash
+   cd Tripli && npm install
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Environment variables**  
+   Copy `.env.example` to `.env.local` and set real values (never commit `.env.local` or expose keys):
+   - `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_ANON_KEY` (or `NEXT_PUBLIC_SUPABASE_ANON_KEY`)
+   - `SUPABASE_SERVICE_ROLE_KEY` (server-only; required for Stripe webhooks + checkout customer sync)
+   - `OPENAI_API_KEY`
+   - `GOOGLE_PLACES_API_KEY`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (one key for both is fine; restrict by referrer for client)
+   - **Billing (optional for local dev):** `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_ID_PRO`, `NEXT_PUBLIC_SITE_URL` — see [`docs/STRIPE.md`](docs/STRIPE.md)
 
-## Learn More
+3. **Supabase**  
+   - Create a project and run migrations in order: `001_initial_schema.sql`, `002_auth_and_rls.sql`, then `003`–`005` as needed (`005_billing.sql` adds profiles, subscription mirror, and trip-generation counting for billing).
+   - In Supabase Dashboard → Authentication → Providers, enable **Email** (and optionally **Confirm email** off for dev).
 
-To learn more about Next.js, take a look at the following resources:
+4. **Google Cloud**  
+   Enable **Maps JavaScript API**, **Places API** (classic), and **Places API (New)**. Create an API key and restrict as needed (HTTP referrer for client). Place photos are proxied server-side so the key is never sent to the browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Run**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Routes
 
-## Deploy on Vercel
+- `/` — Landing (public)
+- `/pricing` — Plans & Stripe checkout (public; checkout requires login)
+- `/login`, `/signup` — Auth (public)
+- `/dashboard` — Your trips (requires login)
+- `/dashboard/billing` — Plan status, fair-use copy, Stripe Customer Portal (requires login)
+- `/planner` — Trip preferences form (requires login)
+- `/plan`, `/plan/complete` — Wizard flow (complete requires login)
+- `/trip/[id]` — Generated trip view (requires login, owner only)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Billing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Free:** one lifetime AI trip generation per account (tracked in the database; deleting a trip does not reset this).
+- **Tripli Pro:** $19/mo via Stripe Subscription — unlimited generations with a **fair use** policy (see UI + `docs/STRIPE.md`).
+- Webhook endpoint: `POST /api/webhooks/stripe`. Full setup: [`docs/STRIPE.md`](docs/STRIPE.md).
+
+## Deploy (Vercel)
+
+Connect the repo, add the same env vars, and deploy. Ensure the Google API key allows your Vercel domain.
