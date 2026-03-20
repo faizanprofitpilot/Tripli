@@ -7,7 +7,8 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(self)",
+    // (self) allows Loom / screen recorders to use camera & mic while on this origin; () blocks them entirely.
+    value: "camera=(self), microphone=(self), geolocation=(self)",
   },
 ];
 
